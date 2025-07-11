@@ -12,7 +12,7 @@ import { Redirect, Slot } from 'expo-router';
 import { images } from '@/constants';
 import useAuthStore from '@/store/auth.store';
 
-export default function _Layout() {
+export default function AuthLayout() {
   const { isAuthenticated } = useAuthStore();
 
   if (isAuthenticated) return <Redirect href='/' />;
