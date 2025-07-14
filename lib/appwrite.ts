@@ -8,7 +8,7 @@ import {
   Storage,
 } from 'react-native-appwrite';
 
-import { CreateUserParams, SignInParams } from '../type';
+import { CreateUserParams, GetMenuParams, SignInParams } from '../type';
 
 export const appwriteConfig = {
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT!,
@@ -92,6 +92,38 @@ export const getCurrentUser = async () => {
     return currentUser.documents[0];
   } catch (error) {
     console.log(error);
+    throw new Error(error as string);
+  }
+};
+
+export const getMenu = async ({ category, query }: GetMenuParams) => {
+  try {
+    const queries: string[] = [];
+
+    if (category) queries.push(Query.equal('categories', category));
+    if (query) queries.push(Query.search('name', query));
+
+    const menus = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.menuCollectionId,
+      queries
+    );
+
+    return menus.documents;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const categories = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.categoryCollectionId
+    );
+
+    return categories.documents;
+  } catch (error) {
     throw new Error(error as string);
   }
 };
