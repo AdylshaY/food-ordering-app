@@ -1,12 +1,15 @@
-import { View, Text, Button, Alert } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { Link, router } from 'expo-router';
 import CustomInput from '@/components/CustomInput';
 import CustomButton from '@/components/CustomButton';
+import { signIn } from '@/lib/appwrite';
+import useAuthStore from '@/store/auth.store';
 
 const SignIn = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
+  const { fetchAuthenticatedUser } = useAuthStore();
 
   const submit = async () => {
     if (!form.email || !form.password) {
@@ -16,12 +19,19 @@ const SignIn = () => {
     setIsSubmitting(true);
 
     try {
-      // Call Appwrite sign-in method here
+      await signIn({
+        email: form.email,
+        password: form.password,
+      });
 
-      Alert.alert('Success', 'User signed in successfully');
+      await fetchAuthenticatedUser();
+
       router.push('/');
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Alert.alert(
+        'Error',
+        'An error occurred while signing in, please try again later.'
+      );
     } finally {
       setIsSubmitting(false);
     }
