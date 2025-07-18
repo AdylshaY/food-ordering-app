@@ -20,6 +20,19 @@ export interface User extends Models.Document {
   name: string;
   email: string;
   avatar: string;
+  phone_number: string;
+  addresses: Address[];
+}
+
+export interface Address extends Models.Document {
+  street: string;
+  city: string;
+  postal_code: string;
+  building_number: string;
+  apartment_number: string;
+  delivery_note?: string;
+  label: string;
+  user_id: string;
 }
 
 export interface CartCustomization {

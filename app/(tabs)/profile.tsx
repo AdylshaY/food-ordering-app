@@ -15,6 +15,7 @@ import CustomHeader from '@/components/CustomHeader';
 import CustomButton from '@/components/CustomButton';
 import useAuthStore from '@/store/auth.store';
 import { account } from '@/lib/appwrite';
+import { formatPhoneNumber } from '@/lib/utils';
 
 const Profile = () => {
   const { user, setIsAuthenticated, setUser } = useAuthStore();
@@ -133,7 +134,7 @@ const Profile = () => {
           </View>
 
           {/* Phone Number - Only show if available */}
-          {user?.phone && (
+          {user?.phone_number && (
             <View className='profile-field'>
               <View className='profile-field__icon'>
                 <Image
@@ -147,53 +148,34 @@ const Profile = () => {
                   Phone number
                 </Text>
                 <Text className='paragraph-semibold text-dark-100'>
-                  {user.phone}
+                  {formatPhoneNumber(user.phone_number)}
                 </Text>
               </View>
             </View>
           )}
 
           {/* Home Address - Only show if available */}
-          {user?.homeAddress && (
-            <View className='profile-field'>
-              <View className='profile-field__icon'>
-                <Image
-                  source={images.location}
-                  className='w-5 h-5 tint-primary'
-                  resizeMode='contain'
-                />
+          {user?.addresses &&
+            user?.addresses.length > 0 &&
+            user.addresses.map((address) => (
+              <View key={address.$id} className='profile-field'>
+                <View className='profile-field__icon'>
+                  <Image
+                    source={images.location}
+                    className='w-5 h-5 tint-primary'
+                    resizeMode='contain'
+                  />
+                </View>
+                <View className='flex-1'>
+                  <Text className='body-medium text-gray-500 mb-1'>
+                    {address.label} - ({address.street})
+                  </Text>
+                  <Text className='paragraph-semibold text-dark-100'>
+                    {`${address.building_number}, ${address.apartment_number}, ${address.city}, ${address.postal_code}`}
+                  </Text>
+                </View>
               </View>
-              <View className='flex-1'>
-                <Text className='body-medium text-gray-500 mb-1'>
-                  Address 1 - (Home)
-                </Text>
-                <Text className='paragraph-semibold text-dark-100'>
-                  {user.homeAddress}
-                </Text>
-              </View>
-            </View>
-          )}
-
-          {/* Work Address - Only show if available */}
-          {user?.workAddress && (
-            <View className='profile-field'>
-              <View className='profile-field__icon'>
-                <Image
-                  source={images.location}
-                  className='w-5 h-5 tint-primary'
-                  resizeMode='contain'
-                />
-              </View>
-              <View className='flex-1'>
-                <Text className='body-medium text-gray-500 mb-1'>
-                  Address 2 - (Work)
-                </Text>
-                <Text className='paragraph-semibold text-dark-100'>
-                  {user.workAddress}
-                </Text>
-              </View>
-            </View>
-          )}
+            ))}
         </View>
 
         {/* Action Buttons */}

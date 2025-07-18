@@ -22,6 +22,7 @@ export const appwriteConfig = {
     process.env.EXPO_PUBLIC_CUSTOMIZATION_COLLECTION_ID!,
   menuCustomizationCollectionId:
     process.env.EXPO_PUBLIC_MENU_CUSTOMIZATION_COLLECTION_ID!,
+  addressCollectionId: process.env.EXPO_PUBLIC_ADDRESS_COLLECTION_ID!,
   bucketId: process.env.EXPO_PUBLIC_BUCKET_ID!,
 };
 
