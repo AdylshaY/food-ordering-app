@@ -4,10 +4,12 @@ import { Link, router } from 'expo-router';
 import CustomInput from '@/components/CustomInput';
 import CustomButton from '@/components/CustomButton';
 import { createUser } from '@/lib/appwrite';
+import useAuthStore from '@/store/auth.store';
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({ email: '', password: '', name: '' });
+  const { fetchAuthenticatedUser } = useAuthStore();
 
   const submit = async () => {
     const { email, password, name } = form;
@@ -23,7 +25,8 @@ const SignUp = () => {
         name,
       });
 
-      Alert.alert('Success', 'User signed up successfully');
+      await fetchAuthenticatedUser();
+
       router.push('/');
     } catch (error: any) {
       Alert.alert('Error', error.message);
