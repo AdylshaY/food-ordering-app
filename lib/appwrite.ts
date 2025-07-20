@@ -8,7 +8,12 @@ import {
   Storage,
 } from 'react-native-appwrite';
 
-import { CreateUserParams, GetMenuParams, SignInParams } from '../type';
+import {
+  CreateUserParams,
+  GetMenuParams,
+  SignInParams,
+  UpdatePhoneNumberParams,
+} from '../type';
 
 export const appwriteConfig = {
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT!,
@@ -126,6 +131,28 @@ export const getCategories = async () => {
     );
 
     return categories.documents;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};
+
+export const updatePhoneNumber = async ({
+  phoneNumber,
+}: UpdatePhoneNumberParams) => {
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) throw new Error('No user found');
+
+    const updatedUser = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      currentUser.$id,
+      {
+        phone_number: phoneNumber,
+      }
+    );
+
+    return updatedUser;
   } catch (error) {
     throw new Error(error as string);
   }

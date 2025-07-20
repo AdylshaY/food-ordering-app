@@ -32,6 +32,7 @@ const SignIn = () => {
         'Error',
         'An error occurred while signing in, please try again later.'
       );
+      console.log('SignIn Error:', error);
     } finally {
       setIsSubmitting(false);
     }

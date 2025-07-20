@@ -6,7 +6,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
@@ -16,13 +16,12 @@ import CustomButton from '@/components/CustomButton';
 import useAuthStore from '@/store/auth.store';
 import { account } from '@/lib/appwrite';
 import { formatPhoneNumber } from '@/lib/utils';
+import UpdatePhoneModal from '@/components/UpdatePhoneModal';
 
 const Profile = () => {
+  const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const { user, setIsAuthenticated, setUser } = useAuthStore();
-
-  const handleEditProfile = () => {
-    console.log('Edit Profile pressed');
-  };
 
   const handleLogout = async () => {
     try {
@@ -134,7 +133,30 @@ const Profile = () => {
           </View>
 
           {/* Phone Number - Only show if available */}
-          {user?.phone_number && (
+          {user?.phone_number ? (
+            <View className='profile-field'>
+              <View className='profile-field__icon'>
+                <Image
+                  source={images.phone}
+                  className='w-5 h-5 tint-primary'
+                  resizeMode='contain'
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => setIsPhoneModalOpen(true)}
+                className='flex-1'
+              >
+                <View className=''>
+                  <Text className='body-medium text-gray-500 mb-1'>
+                    Phone number
+                  </Text>
+                  <Text className='paragraph-semibold text-dark-100'>
+                    {formatPhoneNumber(user.phone_number)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          ) : (
             <View className='profile-field'>
               <View className='profile-field__icon'>
                 <Image
@@ -148,15 +170,20 @@ const Profile = () => {
                   Phone number
                 </Text>
                 <Text className='paragraph-semibold text-dark-100'>
-                  {formatPhoneNumber(user.phone_number)}
+                  No phone number added yet.{' '}
+                  <Text
+                    className='text-primary underline'
+                    onPress={() => console.log('Add Phone Number pressed')}
+                  >
+                    Add Phone Number
+                  </Text>
                 </Text>
               </View>
             </View>
           )}
 
           {/* Home Address - Only show if available */}
-          {user?.addresses &&
-            user?.addresses.length > 0 &&
+          {user?.addresses && user.addresses.length > 0 ? (
             user.addresses.map((address) => (
               <View key={address.$id} className='profile-field'>
                 <View className='profile-field__icon'>
@@ -175,18 +202,34 @@ const Profile = () => {
                   </Text>
                 </View>
               </View>
-            ))}
+            ))
+          ) : (
+            <View className='profile-field'>
+              <View className='profile-field__icon'>
+                <Image
+                  source={images.location}
+                  className='w-5 h-5 tint-primary'
+                  resizeMode='contain'
+                />
+              </View>
+              <View className='flex-1'>
+                <Text className='body-medium text-gray-500 mb-1'>Address</Text>
+                <Text className='paragraph-semibold text-dark-100'>
+                  No address added yet.{' '}
+                  <Text
+                    className='text-primary underline'
+                    onPress={() => setIsAddressModalOpen(true)}
+                  >
+                    Add Address
+                  </Text>
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
 
         {/* Action Buttons */}
         <View className='gap-4 mb-8'>
-          <CustomButton
-            title='Edit Profile'
-            onPress={handleEditProfile}
-            style='bg-primary/10 border border-primary'
-            textStyle='!text-primary'
-          />
-
           <CustomButton
             title='Logout'
             onPress={handleLogout}
@@ -201,6 +244,12 @@ const Profile = () => {
             }
           />
         </View>
+
+        {/* Phone Update Modal */}
+        <UpdatePhoneModal
+          visible={isPhoneModalOpen}
+          onClose={() => setIsPhoneModalOpen(false)}
+        />
       </ScrollView>
     </SafeAreaView>
   );

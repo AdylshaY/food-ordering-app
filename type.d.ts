@@ -103,6 +103,11 @@ interface ProfileFieldProps {
   icon: ImageSourcePropType;
 }
 
+interface ProfileEditFormProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
 interface CreateUserParams {
   email: string;
   password: string;
@@ -117,4 +122,8 @@ interface SignInParams {
 interface GetMenuParams {
   category: string;
   query: string;
+}
+
+interface UpdatePhoneNumberParams {
+  phoneNumber: string;
 }
