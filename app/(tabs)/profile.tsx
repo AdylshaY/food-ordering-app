@@ -20,7 +20,6 @@ import UpdatePhoneModal from '@/components/UpdatePhoneModal';
 
 const Profile = () => {
   const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const { user, setIsAuthenticated, setUser } = useAuthStore();
 
   const handleLogout = async () => {
@@ -193,14 +192,19 @@ const Profile = () => {
                     resizeMode='contain'
                   />
                 </View>
-                <View className='flex-1'>
-                  <Text className='body-medium text-gray-500 mb-1'>
-                    {address.label} - ({address.street})
-                  </Text>
-                  <Text className='paragraph-semibold text-dark-100'>
-                    {`${address.building_number}, ${address.apartment_number}, ${address.city}, ${address.postal_code}`}
-                  </Text>
-                </View>
+                <TouchableOpacity
+                  onPress={() => router.push('/addresses')}
+                  className='flex-1'
+                >
+                  <View className='flex-1'>
+                    <Text className='body-medium text-gray-500 mb-1'>
+                      {address.label} - ({address.street})
+                    </Text>
+                    <Text className='paragraph-semibold text-dark-100'>
+                      {`${address.building_number}, ${address.apartment_number}, ${address.city}, ${address.postal_code}`}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             ))
           ) : (
@@ -212,13 +216,13 @@ const Profile = () => {
                   resizeMode='contain'
                 />
               </View>
-              <View className='flex-1'>
+              <View>
                 <Text className='body-medium text-gray-500 mb-1'>Address</Text>
                 <Text className='paragraph-semibold text-dark-100'>
                   No address added yet.{' '}
                   <Text
                     className='text-primary underline'
-                    onPress={() => setIsAddressModalOpen(true)}
+                    onPress={() => router.push('/addresses')}
                   >
                     Add Address
                   </Text>

@@ -86,6 +86,8 @@ interface CustomButtonProps {
 
 interface CustomHeaderProps {
   title?: string;
+  rightButton?: React.ReactNode;
+  onRightButtonPress?: () => void;
 }
 
 interface CustomInputProps {

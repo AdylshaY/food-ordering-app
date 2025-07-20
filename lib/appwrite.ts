@@ -157,3 +157,20 @@ export const updatePhoneNumber = async ({
     throw new Error(error as string);
   }
 };
+
+export const getUserAddresses = async () => {
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) throw new Error('No user found');
+
+    const addresses = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.addressCollectionId,
+      [Query.equal('user', currentUser.$id)]
+    );
+
+    return addresses.documents;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};

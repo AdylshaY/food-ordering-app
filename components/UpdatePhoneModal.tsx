@@ -80,8 +80,8 @@ const UpdatePhoneModal = ({ visible, onClose }: UpdatePhoneProps) => {
             <CustomButton
               title='İptal'
               onPress={handleClose}
-              style='flex-1 bg-gray-200'
-              textStyle='text-gray-700'
+              style='flex-1 bg-white border border-gray-300'
+              textStyle='text-black'
             />
             <CustomButton
               title={user?.phone_number ? 'Güncelle' : 'Ekle'}
