@@ -174,3 +174,58 @@ export const getUserAddresses = async () => {
     throw new Error(error as string);
   }
 };
+
+export const createAddress = async (addressData: {
+  label: string;
+  street: string;
+  building_number: string;
+  apartment_number: string;
+  city: string;
+  postal_code: string;
+  delivery_note: string;
+}) => {
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) throw new Error('No user found');
+
+    const newAddress = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.addressCollectionId,
+      ID.unique(),
+      {
+        ...addressData,
+        user: currentUser.$id,
+      }
+    );
+
+    return newAddress;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};
+
+export const updateAddress = async (
+  addressId: string,
+  addressData: {
+    label: string;
+    street: string;
+    building_number: string;
+    apartment_number: string;
+    city: string;
+    postal_code: string;
+    delivery_note: string;
+  }
+) => {
+  try {
+    const updatedAddress = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.addressCollectionId,
+      addressId,
+      addressData
+    );
+
+    return updatedAddress;
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};

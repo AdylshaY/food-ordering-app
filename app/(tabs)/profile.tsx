@@ -9,18 +9,35 @@ import {
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { images } from '@/constants';
 import CustomHeader from '@/components/CustomHeader';
 import CustomButton from '@/components/CustomButton';
 import useAuthStore from '@/store/auth.store';
-import { account } from '@/lib/appwrite';
+import { account, getCurrentUser } from '@/lib/appwrite';
 import { formatPhoneNumber } from '@/lib/utils';
 import UpdatePhoneModal from '@/components/UpdatePhoneModal';
+import type { User } from '@/type';
 
 const Profile = () => {
   const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
   const { user, setIsAuthenticated, setUser } = useAuthStore();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const refreshUserData = async () => {
+        try {
+          const currentUser = await getCurrentUser();
+          setUser(currentUser as User);
+        } catch (error) {
+          console.log('Error refreshing user data:', error);
+        }
+      };
+
+      refreshUserData();
+    }, [setUser])
+  );
 
   const handleLogout = async () => {
     try {
@@ -28,7 +45,7 @@ const Profile = () => {
       setIsAuthenticated(false);
       setUser(null);
       router.replace('/sign-in');
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to logout. Please try again.');
     }
   };
@@ -49,8 +66,8 @@ const Profile = () => {
               Profile Could Not Be Loaded
             </Text>
             <Text className='paragraph-medium text-gray-500 text-center mb-8 px-8'>
-              We couldn't load your profile information. Please try logging out
-              and logging back in.
+              We couldn&apos;t load your profile information. Please try logging
+              out and logging back in.
             </Text>
 
             <CustomButton
