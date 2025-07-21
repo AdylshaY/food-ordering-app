@@ -2,7 +2,7 @@
 
 A modern food ordering mobile application built with React Native and Expo. Users can browse menu items, customize orders, manage delivery addresses, and place food orders seamlessly.
 
-## � Screenshots
+## 🖼️ Screenshots
 
 <div align="center">
   <img src="docs/screenshots/auth.png" alt="Authentication" width="200"/>
@@ -18,7 +18,7 @@ A modern food ordering mobile application built with React Native and Expo. User
   <img src="docs/screenshots/search.png" alt="Search" width="200"/>
 </div>
 
-## �📱 Features
+## 📱 Features
 
 - **Authentication**: Sign up, sign in, and secure user sessions
 - **Menu Browsing**: View categorized food items with ratings and nutritional info
