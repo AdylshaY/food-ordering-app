@@ -123,6 +123,21 @@ export const getMenu = async ({ category, query }: GetMenuParams) => {
   }
 };
 
+export const getMenuById = async ({ id }: { id: string }) => {
+  try {
+    const menu = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.menuCollectionId,
+      id
+    );
+
+    return menu;
+  } catch (error) {
+    console.log('Error fetching menu by ID:', error);
+    throw new Error(error as string);
+  }
+};
+
 export const getCategories = async () => {
   try {
     const categories = await databases.listDocuments(
