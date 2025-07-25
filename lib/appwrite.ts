@@ -138,6 +138,35 @@ export const getMenuById = async ({ id }: { id: string }) => {
   }
 };
 
+export const getMenuCustomizations = async ({ menuId }: { menuId: string }) => {
+  try {
+    const menuCustomizations = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.menuCustomizationCollectionId,
+      [Query.equal('menu', menuId)]
+    );
+
+    if (menuCustomizations.documents.length === 0) {
+      return { toppings: [], sides: [] };
+    }
+
+    const customizations = menuCustomizations.documents.map(
+      (doc: any) => doc.customizations
+    );
+
+    const toppings = customizations.filter(
+      (custom: any) => custom.type === 'topping'
+    );
+    const sides = customizations.filter(
+      (custom: any) => custom.type === 'side'
+    );
+
+    return { toppings, sides };
+  } catch (error) {
+    throw new Error(error as string);
+  }
+};
+
 export const getCategories = async () => {
   try {
     const categories = await databases.listDocuments(

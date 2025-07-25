@@ -9,11 +9,24 @@ export interface MenuItem extends Models.Document {
   protein: number;
   rating: number;
   type: string;
+  categories: Category; // Appwrite relationship field name
 }
 
 export interface Category extends Models.Document {
   name: string;
   description: string;
+}
+
+export interface Customization extends Models.Document {
+  name: string;
+  price: number;
+  type: string; // 'topping' or 'side'
+  image_url?: string;
+}
+
+export interface MenuCustomization extends Models.Document {
+  menu: string; // menu ID
+  customizations: string; // customization ID
 }
 
 export interface User extends Models.Document {
