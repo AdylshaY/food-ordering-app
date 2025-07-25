@@ -2,6 +2,7 @@ import { Text, TouchableOpacity, Image, Platform } from 'react-native';
 import { MenuItem } from '@/type';
 import { appwriteConfig } from '@/lib/appwrite';
 import { useCartStore } from '@/store/cart.store';
+import { router } from 'expo-router';
 
 const MenuCard = ({
   item: { $id, image_url, name, price },
@@ -14,6 +15,7 @@ const MenuCard = ({
   return (
     <TouchableOpacity
       className='menu-card'
+      onPress={() => router.push(`/menu/${$id}`)}
       style={
         Platform.OS === 'android'
           ? { elevation: 10, shadowColor: '#878787' }
