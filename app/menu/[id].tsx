@@ -11,12 +11,15 @@ import {
 import { MenuItem, Customization } from '@/type';
 import { images } from '@/constants';
 import { useState } from 'react';
+import { useCartStore } from '@/store/cart.store';
 
 const MenuDetail = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [quantity, setQuantity] = useState(1);
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
   const [selectedSides, setSelectedSides] = useState<string[]>([]);
+
+  const { addItem } = useCartStore();
 
   const {
     data: menuItem,
@@ -71,6 +74,55 @@ const MenuDetail = () => {
   }) || { toppings: [], sides: [] };
   const toppings = menuCustomizations.toppings;
   const sides = menuCustomizations.sides;
+
+  const calculateTotalPrice = () => {
+    const basePrice = menu.price;
+    const toppingsPrice = toppings
+      .filter((topping) => selectedToppings.includes(topping.name))
+      .reduce((total, topping) => total + topping.price, 0);
+    const sidesPrice = sides
+      .filter((side) => selectedSides.includes(side.name))
+      .reduce((total, side) => total + side.price, 0);
+
+    return (basePrice + toppingsPrice + sidesPrice) * quantity;
+  };
+
+  const handleAddToCart = () => {
+    const selectedCustomizations = [
+      ...toppings
+        .filter((topping) => selectedToppings.includes(topping.name))
+        .map((topping) => ({
+          id: topping.$id,
+          name: topping.name,
+          price: topping.price,
+          type: topping.type,
+        })),
+      ...sides
+        .filter((side) => selectedSides.includes(side.name))
+        .map((side) => ({
+          id: side.$id,
+          name: side.name,
+          price: side.price,
+          type: side.type,
+        })),
+    ];
+
+    const cartItem = {
+      id: menu.$id,
+      name: menu.name,
+      price: menu.price,
+      image_url: menu.image_url,
+      customizations: selectedCustomizations,
+    };
+
+    for (let i = 0; i < quantity; i++) {
+      addItem(cartItem);
+    }
+
+    setQuantity(1);
+    setSelectedToppings([]);
+    setSelectedSides([]);
+  };
 
   return (
     <SafeAreaView className='bg-white h-full'>
@@ -234,7 +286,8 @@ const MenuDetail = () => {
                         </View>
                         <View className='bg-gray-800 px-3 py-1 rounded-full'>
                           <Text className='text-white text-xs font-medium'>
-                            {topping.name}
+                            {topping.name}{' '}
+                            {topping.price > 0 && `(+$${topping.price})`}
                           </Text>
                         </View>
                         {!isSelected && (
@@ -304,7 +357,7 @@ const MenuDetail = () => {
                         </View>
                         <View className='bg-gray-800 px-3 py-1 rounded-full'>
                           <Text className='text-white text-xs font-medium'>
-                            {side.name}
+                            {side.name} {side.price > 0 && `(+$${side.price})`}
                           </Text>
                         </View>
                         {!isSelected && (
@@ -351,14 +404,17 @@ const MenuDetail = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity className='flex-1 ml-6 bg-orange-500 py-4 rounded-2xl flex-row items-center justify-center'>
+          <TouchableOpacity
+            onPress={handleAddToCart}
+            className='flex-1 ml-6 bg-orange-500 py-4 rounded-2xl flex-row items-center justify-center'
+          >
             <Image
               source={images.bag}
               className='w-5 h-5 mr-2'
               style={{ tintColor: 'white' }}
             />
             <Text className='text-white font-bold text-lg'>
-              Add to cart (${(menu.price * quantity).toFixed(2)})
+              Add to cart (${calculateTotalPrice().toFixed(2)})
             </Text>
           </TouchableOpacity>
         </View>
